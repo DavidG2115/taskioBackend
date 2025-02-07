@@ -31,7 +31,7 @@ def get_db():
     finally:
         db.close()
         
-# 📌 1. Crear un usuario
+# Crear un usuario
 @app.post("/users/", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
@@ -43,12 +43,12 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return db_user
 
-# 📌 2. Obtener todos los usuarios
+# Obtener todos los usuarios
 @app.get("/users/", response_model=list[UserResponse])
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
-# 📌 3. Obtener un usuario por ID
+# Obtener un usuario por ID
 @app.get("/users/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -56,7 +56,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return user
 
-# 📌 4. Actualizar un usuario
+# Actualizar un usuario
 @app.put("/users/{user_id}", response_model=UserResponse)
 def update_user(user_id: int, user_update: UserCreate, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -69,7 +69,7 @@ def update_user(user_id: int, user_update: UserCreate, db: Session = Depends(get
     db.refresh(user)
     return user
 
-# 📌 5. Eliminar un usuario
+# Eliminar un usuario
 @app.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
@@ -81,7 +81,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     return {"message": "Usuario eliminado"}
 
 
-# 📌 Endpoint para crear una tarea
+# Endpoint para crear una tarea
 @app.post("/tasks/", response_model=TaskResponse)
 def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     db_task = Task(title=task.title, description=task.description, completed=task.completed, icon=task.icon)
@@ -90,12 +90,12 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     db.refresh(db_task)
     return db_task
 
-# 📌 Endpoint para obtener todas las tareas
+# Endpoint para obtener todas las tareas
 @app.get("/tasks/", response_model=list[TaskResponse])
 def read_tasks(db: Session = Depends(get_db)):
     return db.query(Task).all()
 
-# 📌 Endpoint para obtener una tarea por ID
+# Endpoint para obtener una tarea por ID
 @app.get("/tasks/{task_id}", response_model=TaskResponse)
 def read_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
@@ -103,7 +103,7 @@ def read_task(task_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Tarea no encontrada")
     return task
 
-# 📌 Endpoint para actualizar una tarea
+# Endpoint para actualizar una tarea
 @app.put("/tasks/{task_id}", response_model=TaskResponse)
 def update_task(task_id: int, updated_task: TaskCreate, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
@@ -119,7 +119,7 @@ def update_task(task_id: int, updated_task: TaskCreate, db: Session = Depends(ge
     return task
 
 
-# 📌 Endpoint para eliminar una tarea
+# Endpoint para eliminar una tarea
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
