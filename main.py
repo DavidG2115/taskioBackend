@@ -5,6 +5,7 @@ from models import Task, Base
 from schemas import TaskCreate, TaskResponse, UserCreate, UserResponse
 from models import User
 from fastapi.middleware.cors import CORSMiddleware
+from factories.task_factory import TaskFactory  # Importacion de TaskFactory
 
 Base.metadata.create_all(bind=engine)
 
@@ -81,14 +82,20 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     return {"message": "Usuario eliminado"}
 
 
-# Endpoint para crear una tarea
+# Parte que modificamos en el archivo main.py
+#  Modificacion de el endpoint para usar TaskFactory
 @app.post("/tasks/", response_model=TaskResponse)
 def create_task(task: TaskCreate, db: Session = Depends(get_db)):
-    db_task = Task(title=task.title, description=task.description, completed=task.completed, icon=task.icon)
-    db.add(db_task)
+    new_task = TaskFactory.create_task(
+        title=task.title,
+        description=task.description,
+        completed=task.completed,
+        icon=task.icon
+    )
+    db.add(new_task)
     db.commit()
-    db.refresh(db_task)
-    return db_task
+    db.refresh(new_task)
+    return new_task
 
 # Endpoint para obtener todas las tareas
 @app.get("/tasks/", response_model=list[TaskResponse])
